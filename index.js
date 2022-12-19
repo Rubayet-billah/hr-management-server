@@ -9,7 +9,23 @@ const port = process.env.PORT || 5000;
 app.use(cors())
 app.use(express.json())
 
+// database connection
 
+const { MongoClient, ServerApiVersion } = require('mongodb');
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.bhwsqpg.mongodb.net/?retryWrites=true&w=majority`;
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+
+const candidateCollection = client.db('HrManager').collection('candidates')
+const employeesCollection = client.db('HrManager').collection('employees')
+
+async function run() {
+    try {
+
+    } catch (error) {
+        console.log(error)
+    }
+}
+run().catch()
 
 app.get('/', async (req, res) => {
     res.send('HR Management Server is running fine')
