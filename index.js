@@ -31,10 +31,6 @@ app.get('/', async (req, res) => {
     res.send('HR Management Server is running fine')
 })
 
-app.get('/app', async (req, res) => {
-    res.send('app route hit ')
-})
-
 app.listen(port, () => {
     console.log(`running fine on port ${port}`)
 })
