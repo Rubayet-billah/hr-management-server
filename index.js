@@ -18,9 +18,27 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 const candidateCollection = client.db('HrManager').collection('candidates')
 const employeesCollection = client.db('HrManager').collection('employees')
 
+/**
+Naming conventions for APIs
+ * For Candidates please use the path - '/candidates', '/candidates/:id'
+ * For Employees please use the path - '/employees', '/employees/:id'
+ * For Admins please use the path - '/admins', '/admins/:id'
+ */
+
 async function run() {
     try {
-
+        /*
+        Candidates API here
+        
+        */
+        /*
+        Employees API here
+        
+        */
+        /*
+        Admins API here
+        
+        */
     } catch (error) {
         console.log(error)
     }
