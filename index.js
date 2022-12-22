@@ -40,7 +40,7 @@ async function run() {
         app.get('/employees', async (req, res) => {
             const query = {};
             const employees = await employeesCollection.find(query).toArray();
-            res.send(employees)
+            res.send(employees);
         })
         /*---- Employees APIs ends here ----*/
 
