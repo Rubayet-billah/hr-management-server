@@ -47,6 +47,11 @@ async function run() {
             const employees = await employeesCollection.find(query).toArray();
             res.send(employees);
         })
+        app.post('/employees', async (req, res) => {
+            const newEmployee = req.body;
+            const insertEmployeeResult = await employeesCollection.insertOne(newEmployee);
+            res.send(insertEmployeeResult);
+        })
         /*---- Employees APIs ends here ----*/
 
 
