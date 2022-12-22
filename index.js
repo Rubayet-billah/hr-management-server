@@ -34,6 +34,11 @@ async function run() {
             const candidates = await candidatesCollection.find(query).toArray()
             res.send(candidates)
         })
+        app.post('/candidates', async (req, res) => {
+            const newCandidate = req.body;
+            const insertCandidateResult = await candidatesCollection.insertOne(newCandidate);
+            res.send(insertCandidateResult)
+        })
         /*---- Candidates APIs ends here ----*/
 
         /*---- Employees APIs starts here ----*/
