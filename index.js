@@ -15,8 +15,9 @@ const { MongoClient, ServerApiVersion } = require('mongodb');
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.bhwsqpg.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
-const candidateCollection = client.db('HrManager').collection('candidates')
+const candidatesCollection = client.db('HrManager').collection('candidates')
 const employeesCollection = client.db('HrManager').collection('employees')
+const adminsCollection = client.db('HrManager').collection('admins')
 
 /**
 Naming conventions for APIs
@@ -27,18 +28,23 @@ Naming conventions for APIs
 
 async function run() {
     try {
-        /*
-        Candidates API here
-        
-        */
-        /*
-        Employees API here
-        
-        */
-        /*
-        Admins API here
-        
-        */
+        /*---- Candidates APIs starts here ----*/
+        app.get('/candidates', async (req, res) => {
+            const query = {}
+            const candidates = await candidatesCollection.find(query).toArray()
+            res.send(candidates)
+        })
+        /*---- Candidates APIs ends here ----*/
+
+        /*---- Employees APIs starts here ----*/
+        app.get('/employees', async (req, res) => {
+            const query = {};
+            const employees = await employeesCollection.find(query).toArray();
+            res.send(employees)
+        })
+        /*---- Employees APIs ends here ----*/
+
+
     } catch (error) {
         console.log(error)
     }
