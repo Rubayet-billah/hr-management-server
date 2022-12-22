@@ -54,6 +54,19 @@ async function run() {
         })
         /*---- Employees APIs ends here ----*/
 
+        /*---- Admins APIs starts here ----*/
+        app.get('/admins', async (req, res) => {
+            const query = {};
+            const admins = await employeesCollection.find(query).toArray();
+            res.send(admins)
+        })
+        app.post('/admins', async (req, res) => {
+            const admin = req.body;
+            const insertAdminResult = await adminsCollection.insertOne(admin)
+            res.send(insertAdminResult);
+        })
+        /*---- Admins APIs ends here ----*/
+
 
     } catch (error) {
         console.log(error)
