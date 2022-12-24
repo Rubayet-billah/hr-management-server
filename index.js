@@ -20,9 +20,10 @@ const employeesCollection = client.db('HrManager').collection('employees')
 const adminsCollection = client.db('HrManager').collection('admins')
 const shortlistedCandidatesCollection = client.db('HrManager').collection('shortlistedCandidates')
 
-/**
+/*
 Naming conventions for APIs
  * For Candidates please use the path - '/candidates', '/candidates/:id'
+ * For Candidates please use the path - '/shortlistedCandidate', '/shortlistedCandidate/:id'
  * For Employees please use the path - '/employees', '/employees/:id'
  * For Admins please use the path - '/admins', '/admins/:id'
  */
@@ -43,6 +44,11 @@ async function run() {
         /*---- Candidates APIs ends here ----*/
 
         /*---- Shortlisted Candidates APIs starts here ----*/
+        app.get('/shortlistedCandidate', async (req, res) => {
+            const query = {};
+            const shortlistedCandidate = await shortlistedCandidatesCollection.find(query).toArray();
+            res.send(shortlistedCandidate)
+        })
         app.post('/shortlistedCandidate', async (req, res) => {
             const shortlistedCandidate = req.body;
             const shortlistedCandidateId = shortlistedCandidate._id;
