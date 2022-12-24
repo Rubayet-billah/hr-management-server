@@ -11,13 +11,14 @@ app.use(express.json())
 
 // database connection
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.bhwsqpg.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
 const candidatesCollection = client.db('HrManager').collection('candidates')
 const employeesCollection = client.db('HrManager').collection('employees')
 const adminsCollection = client.db('HrManager').collection('admins')
+const shortlistedCandidatesCollection = client.db('HrManager').collection('shortlistedCandidates')
 
 /**
 Naming conventions for APIs
@@ -40,6 +41,17 @@ async function run() {
             res.send(insertCandidateResult)
         })
         /*---- Candidates APIs ends here ----*/
+
+        /*---- Shortlisted Candidates APIs starts here ----*/
+        app.post('/shortlistedCandidate', async (req, res) => {
+            const shortlistedCandidate = req.body;
+            const shortlistedCandidateId = shortlistedCandidate._id;
+            const filter = { _id: ObjectId(shortlistedCandidateId) }
+            const removeCandidateFromMainDB = await candidatesCollection.deleteOne(filter);
+            const insertShortlistedCandidateResult = await shortlistedCandidatesCollection.insertOne(shortlistedCandidate);
+            res.send(insertShortlistedCandidateResult);
+        })
+        /*---- Shortlisted Candidates APIs ends here ----*/
 
         /*---- Employees APIs starts here ----*/
         app.get('/employees', async (req, res) => {
