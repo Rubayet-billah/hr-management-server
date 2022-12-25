@@ -43,6 +43,14 @@ async function run() {
             const insertDepartment = await departmentsCollection.insertOne(newDepartment);
             res.send(insertDepartment)
         })
+
+        app.delete('/department/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) }
+            const result = await departmentsCollection.deleteOne(query);
+            res.send(result)
+        })
+
         /*--------- Department Api End Here--------- */
 
 
