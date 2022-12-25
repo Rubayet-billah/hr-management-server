@@ -16,6 +16,7 @@ const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
 const candidatesCollection = client.db('HrManager').collection('candidates')
+const departmentsCollection = client.db('HrManager').collection('departments')
 const employeesCollection = client.db('HrManager').collection('employees')
 const adminsCollection = client.db('HrManager').collection('admins')
 const shortlistedCandidatesCollection = client.db('HrManager').collection('shortlistedCandidates')
@@ -30,6 +31,21 @@ Naming conventions for APIs
 
 async function run() {
     try {
+        /*------Department APIs start here ------- */
+        app.get('/department', async (req, res) => {
+            const query = {}
+            const department = await departmentsCollection.find(query).toArray()
+            res.send(department)
+        })
+
+        app.post('/department', async (req, res) => {
+            const newDepartment = req.body;
+            const insertDepartment = await departmentsCollection.insertOne(newDepartment);
+            res.send(insertDepartment)
+        })
+        /*--------- Department Api End Here--------- */
+
+
         /*---- Candidates APIs starts here ----*/
         app.get('/candidates', async (req, res) => {
             const query = {}
