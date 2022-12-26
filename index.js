@@ -99,13 +99,19 @@ async function run() {
         /*---- Admins APIs starts here ----*/
         app.get('/admins', async (req, res) => {
             const query = {};
-            const admins = await employeesCollection.find(query).toArray();
+            const admins = await adminsCollection.find(query).toArray();
             res.send(admins)
         })
         app.post('/admins', async (req, res) => {
             const admin = req.body;
             const insertAdminResult = await adminsCollection.insertOne(admin)
             res.send(insertAdminResult);
+        })
+        app.delete('/admins/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await adminsCollection.deleteOne(query);
+            res.send(result);
         })
         /*---- Admins APIs ends here ----*/
 
