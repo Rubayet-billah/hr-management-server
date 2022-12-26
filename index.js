@@ -57,7 +57,7 @@ async function run() {
         /*---- Candidates APIs starts here ----*/
         app.get('/candidates', async (req, res) => {
             const query = {}
-            const candidates = await candidatesCollection.find(query).toArray()
+            const candidates = await candidatesCollection.find(query).sort({ applyDate: -1 }).toArray()
             res.send(candidates)
         })
         app.post('/candidates', async (req, res) => {
@@ -70,7 +70,7 @@ async function run() {
         /*---- Shortlisted Candidates APIs starts here ----*/
         app.get('/shortlistedCandidate', async (req, res) => {
             const query = {};
-            const shortlistedCandidate = await shortlistedCandidatesCollection.find(query).toArray();
+            const shortlistedCandidate = await shortlistedCandidatesCollection.find(query).sort({ applyDate: -1 }).toArray();
             res.send(shortlistedCandidate)
         })
         app.post('/shortlistedCandidate', async (req, res) => {
