@@ -25,6 +25,43 @@ const employeesCollection = client.db('HrManager').collection('employees');
 const adminsCollection = client.db('HrManager').collection('admins');
 const shortlistedCandidatesCollection = client.db('HrManager').collection('shortlistedCandidates');
 
+// ---------------------------------------------
+// DELETEING A FIREBASE USER (USING FIREBASE SDK)
+// ---------------------------------------------
+
+const admin = require("firebase-admin");
+const auth = require('firebase-admin/auth');
+
+admin.initializeApp({
+    credential: admin.credential.cert({
+        projectId: process.env.PROJECT_ID,
+        privateKey: process.env.PRIVATE_KEY?.replace(/\\n/g, '\n'),
+        clientEmail: process.env.CLIENT_EMAIL,
+    }),
+});
+
+app.get('/firebase/deleteUser/:email', async (req, res) => {
+    const email = req.params.email;
+    auth.getAuth()
+        .getUserByEmail(email)
+        .then(user => {
+            auth.getAuth()
+                .deleteUser(user.uid)
+                .then(() => {
+                    res.send({ status: 'success', message: "User deleted successfully" });
+                })
+                .catch(error => {
+                    res.send({ status: 'error', message: "Error deleting user" });
+                });
+        })
+        .catch(error => {
+            res.send({ status: 'error', message: "User not found" });
+        });
+})
+
+// ---------------------------------------------
+// ---------------------------------------------
+
 /*
 Naming conventions for APIs
  * For Candidates please use the path - '/candidates', '/candidates/:id'
