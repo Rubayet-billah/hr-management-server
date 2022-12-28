@@ -24,6 +24,7 @@ const departmentsCollection = client.db('HrManager').collection('departments');
 const employeesCollection = client.db('HrManager').collection('employees');
 const adminsCollection = client.db('HrManager').collection('admins');
 const shortlistedCandidatesCollection = client.db('HrManager').collection('shortlistedCandidates');
+const eventsCollection = client.db('HrManager').collection('events');
 
 // ---------------------------------------------
 // DELETEING A FIREBASE USER (USING FIREBASE SDK)
@@ -251,6 +252,19 @@ async function run() {
             res.send(result);
         })
         /*---- Admins APIs ends here ----*/
+
+        /*---- Events APIs start here ----*/
+        app.get('/events', async (req, res) => {
+            const query = {};
+            const events = await eventsCollection.find(query).toArray();
+            res.send(events);
+        })
+        app.post('/events', async (req, res) => {
+            const event = req.body;
+            const result = await eventsCollection.insertOne(event);
+            res.send(result);
+        })
+        /*---- Events APIs end here ----*/
 
 
     } catch (error) {
