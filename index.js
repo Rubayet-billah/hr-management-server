@@ -105,7 +105,8 @@ async function run() {
     app.post('/candidates', async (req, res) => {
       const newCandidate = req.body;
       const newCandidateWithTimeStamp = { ...newCandidate, created_at: Date.now() };
-      const insertCandidateResult = await candidatesCollection.insertOne(newCandidate);
+
+      const insertCandidateResult = await candidatesCollection.insertOne(newCandidateWithTimeStamp);
       res.send(insertCandidateResult);
     });
     /*---- Candidates APIs ends here ----*/
