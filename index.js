@@ -30,7 +30,7 @@ const eventsCollection = client.db('HrManager').collection('events');
 // DELETEING A FIREBASE USER (USING FIREBASE SDK)
 // ---------------------------------------------
 
-const admin = require("firebase-admin");
+const admin = require('firebase-admin');
 const auth = require('firebase-admin/auth');
 
 admin.initializeApp({
@@ -43,22 +43,24 @@ admin.initializeApp({
 
 app.get('/firebase/deleteUser/:email', async (req, res) => {
     const email = req.params.email;
-    auth.getAuth()
+    auth
+        .getAuth()
         .getUserByEmail(email)
-        .then(user => {
-            auth.getAuth()
+        .then((user) => {
+            auth
+                .getAuth()
                 .deleteUser(user.uid)
                 .then(() => {
-                    res.send({ status: 'success', message: "User deleted successfully" });
+                    res.send({ status: 'success', message: 'User deleted successfully' });
                 })
-                .catch(error => {
-                    res.send({ status: 'error', message: "Error deleting user" });
+                .catch((error) => {
+                    res.send({ status: 'error', message: 'Error deleting user' });
                 });
         })
-        .catch(error => {
-            res.send({ status: 'error', message: "User not found" });
+        .catch((error) => {
+            res.send({ status: 'error', message: 'User not found' });
         });
-})
+});
 
 // ---------------------------------------------
 // ---------------------------------------------
@@ -117,12 +119,19 @@ async function run() {
         });
         app.post('/shortlistedCandidate', async (req, res) => {
             const shortlistedCandidate = req.body;
+            const { _id, ...cleanShortlistedCandidate } = shortlistedCandidate;
             const shortlistedCandidateId = shortlistedCandidate._id;
             const filter = { _id: ObjectId(shortlistedCandidateId) };
             const removeCandidateFromMainDB = await candidatesCollection.deleteOne(filter);
-            const insertShortlistedCandidateResult = await shortlistedCandidatesCollection.insertOne(shortlistedCandidate);
+            const insertShortlistedCandidateResult = await shortlistedCandidatesCollection.insertOne(cleanShortlistedCandidate);
             res.send(insertShortlistedCandidateResult);
         });
+        app.delete('/shortlistedCandidate/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) }
+            const deleteCandidateResult = await shortlistedCandidatesCollection.deleteOne(filter);
+            res.send(deleteCandidateResult);
+        })
         /*---- Shortlisted Candidates APIs ends here ----*/
 
         /*---- Employees APIs starts here ----*/
@@ -134,9 +143,25 @@ async function run() {
 
         app.post('/employees', async (req, res) => {
             const newEmployee = req.body;
-            const newEmployeeWithTimeStamp = { ...newEmployee, created_at: Date.now() };
+            const newEmployeeWithTimeStamp = { ...newEmployee, created_at: Date.now(), absent: 0 };
             const insertEmployeeResult = await employeesCollection.insertOne(newEmployeeWithTimeStamp);
             res.send(insertEmployeeResult);
+        });
+
+        app.patch('/employees', async (req, res) => {
+            const employeesUpdateData = req.body;
+            const filter = { _id: ObjectId(employeesUpdateData._id) };
+            const { _id, ...rest } = employeesUpdateData;
+            const employeesCleanUpdateData = rest;
+
+            const updateDoc = {
+                $set: {
+                    ...employeesCleanUpdateData,
+                    updated_at: Date.now(),
+                },
+            };
+            const result = await employeesCollection.updateOne(filter, updateDoc, { upsert: true });
+            res.send(result);
         });
 
         app.delete('/employees/:id', async (req, res) => {
@@ -144,6 +169,7 @@ async function run() {
             const query = { _id: ObjectId(id) };
             const result = await employeesCollection.deleteOne(query);
             res.send(result);
+            console.log(result);
         });
         /*---- Employees APIs ends here ----*/
 
@@ -171,54 +197,53 @@ async function run() {
     try {
         /*------Department APIs start here ------- */
         app.get('/department', async (req, res) => {
-            const query = {}
-            const department = await departmentsCollection.find(query).toArray()
-            res.send(department)
-        })
+            const query = {};
+            const department = await departmentsCollection.find(query).toArray();
+            res.send(department);
+        });
 
         app.post('/department', async (req, res) => {
             const newDepartment = req.body;
             const insertDepartment = await departmentsCollection.insertOne(newDepartment);
-            res.send(insertDepartment)
-        })
+            res.send(insertDepartment);
+        });
 
         app.delete('/department/:id', async (req, res) => {
             const id = req.params.id;
-            const query = { _id: ObjectId(id) }
+            const query = { _id: ObjectId(id) };
             const result = await departmentsCollection.deleteOne(query);
-            res.send(result)
-        })
+            res.send(result);
+        });
 
         /*--------- Department Api End Here--------- */
 
-
         /*---- Candidates APIs starts here ----*/
         app.get('/candidates', async (req, res) => {
-            const query = {}
-            const candidates = await candidatesCollection.find(query).sort({ applyDate: -1 }).toArray()
-            res.send(candidates)
-        })
+            const query = {};
+            const candidates = await candidatesCollection.find(query).sort({ applyDate: -1 }).toArray();
+            res.send(candidates);
+        });
         app.post('/candidates', async (req, res) => {
             const newCandidate = req.body;
             const insertCandidateResult = await candidatesCollection.insertOne(newCandidate);
-            res.send(insertCandidateResult)
-        })
+            res.send(insertCandidateResult);
+        });
         /*---- Candidates APIs ends here ----*/
 
         /*---- Shortlisted Candidates APIs starts here ----*/
         app.get('/shortlistedCandidate', async (req, res) => {
             const query = {};
             const shortlistedCandidate = await shortlistedCandidatesCollection.find(query).sort({ applyDate: -1 }).toArray();
-            res.send(shortlistedCandidate)
-        })
+            res.send(shortlistedCandidate);
+        });
         app.post('/shortlistedCandidate', async (req, res) => {
             const shortlistedCandidate = req.body;
             const shortlistedCandidateId = shortlistedCandidate._id;
-            const filter = { _id: ObjectId(shortlistedCandidateId) }
+            const filter = { _id: ObjectId(shortlistedCandidateId) };
             const removeCandidateFromMainDB = await candidatesCollection.deleteOne(filter);
             const insertShortlistedCandidateResult = await shortlistedCandidatesCollection.insertOne(shortlistedCandidate);
             res.send(insertShortlistedCandidateResult);
-        })
+        });
         /*---- Shortlisted Candidates APIs ends here ----*/
 
         /*---- Employees APIs starts here ----*/
@@ -226,12 +251,12 @@ async function run() {
             const query = {};
             const employees = await employeesCollection.find(query).toArray();
             res.send(employees);
-        })
+        });
         app.post('/employees', async (req, res) => {
             const newEmployee = req.body;
             const insertEmployeeResult = await employeesCollection.insertOne(newEmployee);
             res.send(insertEmployeeResult);
-        })
+        });
         /*---- Employees APIs ends here ----*/
 
         /*---- Admins APIs starts here ----*/
@@ -252,19 +277,6 @@ async function run() {
             res.send(result);
         })
         /*---- Admins APIs ends here ----*/
-
-        /*---- Events APIs start here ----*/
-        app.get('/events', async (req, res) => {
-            const query = {};
-            const events = await eventsCollection.find(query).toArray();
-            res.send(events);
-        })
-        app.post('/events', async (req, res) => {
-            const event = req.body;
-            const result = await eventsCollection.insertOne(event);
-            res.send(result);
-        })
-        /*---- Events APIs end here ----*/
 
 
     } catch (error) {
