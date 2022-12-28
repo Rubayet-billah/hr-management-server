@@ -109,6 +109,12 @@ async function run() {
       const insertCandidateResult = await candidatesCollection.insertOne(newCandidateWithTimeStamp);
       res.send(insertCandidateResult);
     });
+    app.delete('/candidates/:id', async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: ObjectId(id) }
+      const candidateDelete = await candidatesCollection.deleteOne(filter);
+      res.send(candidateDelete)
+    })
     /*---- Candidates APIs ends here ----*/
 
     /*---- Shortlisted Candidates APIs starts here ----*/
