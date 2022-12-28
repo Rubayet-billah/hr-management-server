@@ -263,24 +263,36 @@ async function run() {
         app.get('/admins', async (req, res) => {
             const query = {};
             const admins = await adminsCollection.find(query).toArray();
-            res.send(admins)
-        })
+            res.send(admins);
+        });
         app.post('/admins', async (req, res) => {
             const admin = req.body;
-            const insertAdminResult = await adminsCollection.insertOne(admin)
+            const insertAdminResult = await adminsCollection.insertOne(admin);
             res.send(insertAdminResult);
-        })
+        });
         app.delete('/admins/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
             const result = await adminsCollection.deleteOne(query);
             res.send(result);
-        })
+        });
         /*---- Admins APIs ends here ----*/
 
+        /*---- Events APIs start here ----*/
+        app.get('/events', async (req, res) => {
+            const query = {};
+            const events = await eventsCollection.find(query).toArray();
+            res.send(events);
+        })
+        app.post('/events', async (req, res) => {
+            const event = req.body;
+            const result = await eventsCollection.insertOne(event);
+            res.send(result);
+        })
+        /*---- Events APIs end here ----*/
 
     } catch (error) {
-        console.log(error)
+        console.log(error);
     }
 }
 run().catch();
