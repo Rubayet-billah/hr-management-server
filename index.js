@@ -74,6 +74,7 @@ Naming conventions for APIs
  */
 
 async function run() {
+
     try {
         /*------Department APIs start here ------- */
         app.get('/department', async (req, res) => {
@@ -299,6 +300,213 @@ async function run() {
     } catch (error) {
         console.log(error);
     }
+  try {
+    /*------Department APIs start here ------- */
+    app.get('/department', async (req, res) => {
+      const query = {};
+      const department = await departmentsCollection.find(query).toArray();
+      res.send(department);
+    });
+
+    app.post('/department', async (req, res) => {
+      const newDepartment = req.body;
+      const insertDepartment = await departmentsCollection.insertOne(newDepartment);
+      res.send(insertDepartment);
+    });
+
+    app.delete('/department/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await departmentsCollection.deleteOne(query);
+      res.send(result);
+    });
+
+    /*--------- Department Api End Here--------- */
+
+    /*---- Candidates APIs starts here ----*/
+    app.get('/candidates', async (req, res) => {
+      const query = {};
+      const candidates = await candidatesCollection.find(query).sort({ created_at: -1 }).toArray();
+      res.send(candidates);
+    });
+    app.post('/candidates', async (req, res) => {
+      const newCandidate = req.body;
+      const newCandidateWithTimeStamp = { ...newCandidate, created_at: Date.now() };
+
+      const insertCandidateResult = await candidatesCollection.insertOne(newCandidateWithTimeStamp);
+      res.send(insertCandidateResult);
+    });
+    /*---- Candidates APIs ends here ----*/
+
+    /*---- Shortlisted Candidates APIs starts here ----*/
+    app.get('/shortlistedCandidate', async (req, res) => {
+      const query = {};
+      const shortlistedCandidate = await shortlistedCandidatesCollection.find(query).toArray();
+      res.send(shortlistedCandidate);
+    });
+    app.post('/shortlistedCandidate', async (req, res) => {
+      const shortlistedCandidate = req.body;
+      const { _id, ...cleanShortlistedCandidate } = shortlistedCandidate;
+      const shortlistedCandidateId = shortlistedCandidate._id;
+      const filter = { _id: ObjectId(shortlistedCandidateId) };
+      const removeCandidateFromMainDB = await candidatesCollection.deleteOne(filter);
+      const insertShortlistedCandidateResult = await shortlistedCandidatesCollection.insertOne(cleanShortlistedCandidate);
+      res.send(insertShortlistedCandidateResult);
+    });
+    app.delete('/shortlistedCandidate/:id', async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: ObjectId(id) }
+      const deleteCandidateResult = await shortlistedCandidatesCollection.deleteOne(filter);
+      res.send(deleteCandidateResult);
+    })
+    /*---- Shortlisted Candidates APIs ends here ----*/
+
+    /*---- Employees APIs starts here ----*/
+    app.get('/employees', async (req, res) => {
+      const query = {};
+      const employees = await employeesCollection.find(query).sort({ created_at: -1 }).toArray();
+      res.send(employees);
+    });
+
+    app.post('/employees', async (req, res) => {
+      const newEmployee = req.body;
+      const newEmployeeWithTimeStamp = { ...newEmployee, created_at: Date.now(), absent: 0 };
+      const insertEmployeeResult = await employeesCollection.insertOne(newEmployeeWithTimeStamp);
+      res.send(insertEmployeeResult);
+    });
+
+    app.patch('/employees', async (req, res) => {
+      const employeesUpdateData = req.body;
+      const filter = { _id: ObjectId(employeesUpdateData._id) };
+      const { _id, ...rest } = employeesUpdateData;
+      const employeesCleanUpdateData = rest;
+
+      const updateDoc = {
+        $set: {
+          ...employeesCleanUpdateData,
+          updated_at: Date.now(),
+        },
+      };
+      const result = await employeesCollection.updateOne(filter, updateDoc, { upsert: true });
+      res.send(result);
+    });
+
+    app.delete('/employees/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await employeesCollection.deleteOne(query);
+      res.send(result);
+      console.log(result);
+    });
+    /*---- Employees APIs ends here ----*/
+
+    /*---- Admins APIs starts here ----*/
+    app.get('/admins', async (req, res) => {
+      const query = {};
+      const admins = await adminsCollection.find(query).toArray();
+      res.send(admins);
+    });
+    app.post('/admins', async (req, res) => {
+      const admin = req.body;
+      const insertAdminResult = await adminsCollection.insertOne(admin);
+      res.send(insertAdminResult);
+    });
+    app.delete('/admins/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await adminsCollection.deleteOne(query);
+      res.send(result);
+    });
+    /*---- Admins APIs ends here ----*/
+  } catch (error) {
+    console.log(error);
+  }
+  try {
+    /*------Department APIs start here ------- */
+    app.get('/department', async (req, res) => {
+      const query = {};
+      const department = await departmentsCollection.find(query).toArray();
+      res.send(department);
+    });
+
+    app.post('/department', async (req, res) => {
+      const newDepartment = req.body;
+      const insertDepartment = await departmentsCollection.insertOne(newDepartment);
+      res.send(insertDepartment);
+    });
+
+    app.delete('/department/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await departmentsCollection.deleteOne(query);
+      res.send(result);
+    });
+
+    /*--------- Department Api End Here--------- */
+
+    /*---- Candidates APIs starts here ----*/
+    app.get('/candidates', async (req, res) => {
+      const query = {};
+      const candidates = await candidatesCollection.find(query).sort({ applyDate: -1 }).toArray();
+      res.send(candidates);
+    });
+    app.post('/candidates', async (req, res) => {
+      const newCandidate = req.body;
+      const insertCandidateResult = await candidatesCollection.insertOne(newCandidate);
+      res.send(insertCandidateResult);
+    });
+    /*---- Candidates APIs ends here ----*/
+
+    /*---- Shortlisted Candidates APIs starts here ----*/
+    app.get('/shortlistedCandidate', async (req, res) => {
+      const query = {};
+      const shortlistedCandidate = await shortlistedCandidatesCollection.find(query).sort({ applyDate: -1 }).toArray();
+      res.send(shortlistedCandidate);
+    });
+    app.post('/shortlistedCandidate', async (req, res) => {
+      const shortlistedCandidate = req.body;
+      const shortlistedCandidateId = shortlistedCandidate._id;
+      const filter = { _id: ObjectId(shortlistedCandidateId) };
+      const removeCandidateFromMainDB = await candidatesCollection.deleteOne(filter);
+      const insertShortlistedCandidateResult = await shortlistedCandidatesCollection.insertOne(shortlistedCandidate);
+      res.send(insertShortlistedCandidateResult);
+    });
+    /*---- Shortlisted Candidates APIs ends here ----*/
+
+    /*---- Employees APIs starts here ----*/
+    app.get('/employees', async (req, res) => {
+      const query = {};
+      const employees = await employeesCollection.find(query).toArray();
+      res.send(employees);
+    });
+    app.post('/employees', async (req, res) => {
+      const newEmployee = req.body;
+      const insertEmployeeResult = await employeesCollection.insertOne(newEmployee);
+      res.send(insertEmployeeResult);
+    });
+    /*---- Employees APIs ends here ----*/
+
+    /*---- Admins APIs starts here ----*/
+    app.get('/admins', async (req, res) => {
+      const query = {};
+      const admins = await adminsCollection.find(query).toArray();
+      res.send(admins);
+    });
+    app.post('/admins', async (req, res) => {
+      const admin = req.body;
+      const insertAdminResult = await adminsCollection.insertOne(admin);
+      res.send(insertAdminResult);
+    });
+    app.delete('/admins/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await adminsCollection.deleteOne(query);
+      res.send(result);
+    });
+    /*---- Admins APIs ends here ----*/
+  } catch (error) {
+    console.log(error);
+  }
 }
 run().catch();
 
