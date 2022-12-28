@@ -289,6 +289,11 @@ async function run() {
             const result = await eventsCollection.insertOne(event);
             res.send(result);
         })
+        app.delete('/events/:id', async (req, res) => {
+            const query = { _id: ObjectId(req.params.id) };
+            const result = await eventsCollection.deleteOne(query);
+            res.send(result);
+        })
         /*---- Events APIs end here ----*/
 
     } catch (error) {
