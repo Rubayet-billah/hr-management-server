@@ -118,12 +118,19 @@ async function run() {
     });
     app.post('/shortlistedCandidate', async (req, res) => {
       const shortlistedCandidate = req.body;
+      const { _id, ...cleanShortlistedCandidate } = shortlistedCandidate;
       const shortlistedCandidateId = shortlistedCandidate._id;
       const filter = { _id: ObjectId(shortlistedCandidateId) };
       const removeCandidateFromMainDB = await candidatesCollection.deleteOne(filter);
-      const insertShortlistedCandidateResult = await shortlistedCandidatesCollection.insertOne(shortlistedCandidate);
+      const insertShortlistedCandidateResult = await shortlistedCandidatesCollection.insertOne(cleanShortlistedCandidate);
       res.send(insertShortlistedCandidateResult);
     });
+    app.delete('/shortlistedCandidate/:id', async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: ObjectId(id) }
+      const deleteCandidateResult = await shortlistedCandidatesCollection.deleteOne(filter);
+      res.send(deleteCandidateResult);
+    })
     /*---- Shortlisted Candidates APIs ends here ----*/
 
     /*---- Employees APIs starts here ----*/
