@@ -50,8 +50,6 @@ router.patch('/absent/:id', async (req, res) => {
     const value = req.query.value;
     const filter = { _id: ObjectId(id) };
 
-    console.log(id, action, value);
-
     if (action === 'increment') {
         const updateDoc = {
             $set: {

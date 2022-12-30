@@ -17,6 +17,23 @@ Naming conventions for APIs
 * For Admins please use the path - '/admins', '/admins/:id'
 */
 
+// JSON Web Token Implemented
+function verifyJWT(req, res, next) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) {
+    return res.status(401).send('Unauthorized access')
+  }
+  const token = authHeader.split(' ')[1];
+  jwt.verify(token, process.env.ACCESS_TOKEN, function (err, decoded) {
+    if (err) {
+      return res.status(403).send('forbidden access')
+    }
+    req.decoded = decoded;
+    next();
+  })
+}
+
+
 // routes
 const eventsRoute = require('./routes/Events');
 const adminsRoute = require('./routes/Admins');
@@ -45,6 +62,7 @@ async function run() {
     app.use('/events', eventsRoute);
 
   } catch (error) {
+    verifyJWT()
     console.log(error);
   }
 }

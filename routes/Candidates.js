@@ -8,7 +8,7 @@ const candidatesCollection = client.db('HrManager').collection('candidates');
 
 router.get('/', async (req, res) => {
     const query = {};
-    const candidates = await candidatesCollection.find(query).sort({ created_at: -1 }).toArray();
+    const candidates = await candidatesCollection.find(query).sort({ created_at: 1 }).toArray();
     res.send(candidates);
 });
 
