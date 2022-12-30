@@ -1,6 +1,6 @@
-const express = require('express');
-const cors = require('cors');
-require('dotenv').config();
+const express = require("express");
+const cors = require("cors");
+require("dotenv").config();
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -18,40 +18,42 @@ Naming conventions for APIs
 */
 
 // routes
-const eventsRoute = require('./routes/Events');
-const adminsRoute = require('./routes/Admins');
-const departmentsRoute = require('./routes/Departments');
-const candidatesRoute = require('./routes/Candidates');
-const employeesRoute = require('./routes/Employees');
-const shortlistedCandidateRoute = require('./routes/ShortlistedCandidates');
-const firebaseAdminRoute = require('./firebase/firebase.admin');
+const eventsRoute = require("./routes/Events");
+const adminsRoute = require("./routes/Admins");
+const departmentsRoute = require("./routes/Departments");
+const candidatesRoute = require("./routes/Candidates");
+const employeesRoute = require("./routes/Employees");
+const holidaysRoute = require("./routes/Holidays");
+const shortlistedCandidateRoute = require("./routes/ShortlistedCandidates");
+const firebaseAdminRoute = require("./firebase/firebase.admin");
 
 // Firebase admin sdk
-app.use('/firebase', firebaseAdminRoute);
+app.use("/firebase", firebaseAdminRoute);
 
 async function run() {
   try {
     // Departments
-    app.use('/departments', departmentsRoute);
+    app.use("/departments", departmentsRoute);
     // Candidates
-    app.use('/candidates', candidatesRoute);
+    app.use("/candidates", candidatesRoute);
     // Shortlisted candidates
-    app.use('/shortlistedCandidate', shortlistedCandidateRoute);
+    app.use("/shortlistedCandidate", shortlistedCandidateRoute);
     // Employees
-    app.use('/employees', employeesRoute);
+    app.use("/employees", employeesRoute);
     // Admins
-    app.use('/admins', adminsRoute);
+    app.use("/admins", adminsRoute);
     // Events
-    app.use('/events', eventsRoute);
-
+    app.use("/events", eventsRoute);
+    // Holidays
+    app.use("/holidays", holidaysRoute);
   } catch (error) {
     console.log(error);
   }
 }
 run().catch();
 
-app.get('/', async (req, res) => {
-  res.send('HR Management Server is running fine');
+app.get("/", async (req, res) => {
+  res.send("HR Management Server is running fine");
 });
 
 app.listen(port, () => {
