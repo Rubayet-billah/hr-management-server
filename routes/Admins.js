@@ -12,6 +12,13 @@ router.get('/', async (req, res) => {
     res.send(admins);
 });
 
+router.get('/:email', async (req, res) => {
+    const email = req.params.email;
+    const query = { email: email }
+    const admin = await adminsCollection.findOne(query);
+    res.send(admin)
+})
+
 router.post('/', async (req, res) => {
     const admin = req.body;
     const insertAdminResult = await adminsCollection.insertOne(admin);
